@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 
 from accounts.models import User
+from pricing.models import VehicleType
 
 
 class DriverProfile(models.Model):
@@ -77,3 +78,21 @@ class DriverProfile(models.Model):
     def go_offline(self):
         self.is_online = False
         self.save(update_fields=["is_online"])
+
+
+class Vehicle(models.Model):
+    driver = models.ForeignKey(
+        DriverProfile, on_delete=models.CASCADE, related_name="vehicles"
+    )
+    vehicle_type = models.ForeignKey(
+        VehicleType, on_delete=models.PROTECT, related_name="vehicles"
+    )
+    make = models.CharField(max_length=40)
+    model = models.CharField(max_length=40)
+    color = models.CharField(max_length=20)
+    year = models.PositiveIntegerField()
+    plate_number = models.CharField(max_length=12, unique=True)
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.plate_number} ({self.vehicle_type.code})"
