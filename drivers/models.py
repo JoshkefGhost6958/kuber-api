@@ -96,3 +96,50 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f"{self.plate_number} ({self.vehicle_type.code})"
+
+
+class ComplianceDocument(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"
+        APPROVED = "APPROVED", "Approved"
+        REJECTED = "REJECTED", "Rejected"
+
+    driver = models.ForeignKey(
+        DriverProfile, on_delete=models.CASCADE, related_name="documents"
+    )
+    doc_type = models.CharField(max_length=20)
+    file = models.ImageField(upload_to="compliance/")
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.PENDING
+    )
+    reviewed_by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    rejection_reason = models.TextField(blank=True)
+    expiry_date = models.DateField(null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [("driver", "doc_type")]
+
+    def __str__(self):
+        return f"{self.driver.user.phone_number}:{self.doc_type} ({self.status})"
+
+    def approve(self, by):
+        self.status = self.Status.APPROVED
+        self.reviewed_by = by
+        self.reviewed_at = timezone.now()
+        self.rejection_reason = ""
+        self.save(
+            update_fields=["status", "reviewed_by", "reviewed_at", "rejection_reason"]
+        )
+
+    def reject(self, by, reason):
+        self.status = self.Status.REJECTED
+        self.reviewed_by = by
+        self.reviewed_at = timezone.now()
+        self.rejection_reason = reason
+        self.save(
+            update_fields=["status", "reviewed_by", "reviewed_at", "rejection_reason"]
+        )

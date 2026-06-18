@@ -2,11 +2,18 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from django.core.exceptions import ValidationError
+
 from accounts.models import User
 
-from .models import DriverProfile, Vehicle
+from .models import ComplianceDocument, DriverProfile, Vehicle
 from .permissions import IsDriver
-from .serializers import DriverProfileSerializer, VehicleSerializer
+from .serializers import (
+    ComplianceDocumentSerializer,
+    DriverProfileSerializer,
+    VehicleSerializer,
+)
+from .services import build_checklist, missing_mandatory
 
 
 @api_view(["POST"])
@@ -47,3 +54,53 @@ def vehicle_detail(request, pk):
         v.is_active = True
         v.save(update_fields=["is_active"])
     return Response(VehicleSerializer(v).data)
+
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated, IsDriver])
+def documents(request):
+    driver = request.user.driver_profile
+    if request.method == "POST":
+        doc_type = request.data.get("doc_type")
+        # Re-uploading a doc type replaces the existing one (resets to PENDING).
+        ComplianceDocument.objects.filter(driver=driver, doc_type=doc_type).delete()
+        s = ComplianceDocumentSerializer(data=request.data)
+        s.is_valid(raise_exception=True)
+        d = s.save(driver=driver)
+        return Response(ComplianceDocumentSerializer(d).data, status=201)
+    return Response(
+        ComplianceDocumentSerializer(driver.documents.all(), many=True).data
+    )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsDriver])
+def submit(request):
+    driver = request.user.driver_profile
+    missing = missing_mandatory(driver)
+    if missing:
+        return Response(
+            {"detail": "Missing mandatory documents.", "missing": missing},
+            status=422,
+        )
+    try:
+        driver.submit_for_review()
+    except ValidationError as e:
+        return Response({"detail": str(e)}, status=400)
+    return Response({"status": driver.status})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsDriver])
+def driver_me(request):
+    driver = request.user.driver_profile
+    return Response(
+        {
+            **DriverProfileSerializer(driver).data,
+            "vehicles": VehicleSerializer(driver.vehicles.all(), many=True).data,
+            "documents": ComplianceDocumentSerializer(
+                driver.documents.all(), many=True
+            ).data,
+            "checklist": build_checklist(driver),
+        }
+    )
