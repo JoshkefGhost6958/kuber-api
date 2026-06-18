@@ -48,3 +48,24 @@ class OtpCode(models.Model):
     @property
     def is_expired(self) -> bool:
         return timezone.now() >= self.expires_at
+
+
+class PassengerProfile(models.Model):
+    class PaymentMethod(models.TextChoices):
+        MPESA = "MPESA", "M-Pesa"
+        CASH = "CASH", "Cash"
+
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="passenger_profile"
+    )
+    welcome_rides_remaining = models.PositiveIntegerField(default=0)
+    default_payment_method = models.CharField(
+        max_length=6, choices=PaymentMethod.choices, null=True, blank=True
+    )
+    rating_avg = models.DecimalField(
+        max_digits=3, decimal_places=2, null=True, blank=True
+    )
+    rating_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Passenger {self.user.phone_number}"

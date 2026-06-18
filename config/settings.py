@@ -2,7 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = "dev-only-change-me"
+SECRET_KEY = "dev-only-change-me-in-production-this-key-is-not-secret-32b+"
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
