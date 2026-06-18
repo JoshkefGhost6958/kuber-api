@@ -4,13 +4,6 @@ from rest_framework.test import APIClient
 from accounts.models import PassengerProfile, User
 
 
-@pytest.fixture(autouse=True)
-def _debug_on(settings):
-    # The dev_code is only returned when DEBUG; pytest-django forces DEBUG=False,
-    # so enable it for these tests to exercise the dev-login path.
-    settings.DEBUG = True
-
-
 @pytest.mark.django_db
 def test_otp_request_returns_dev_code_in_debug():
     resp = APIClient().post(
