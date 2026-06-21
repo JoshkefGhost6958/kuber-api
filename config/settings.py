@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -14,6 +15,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "accounts",
     "integrations",
     "pricing",
@@ -22,6 +24,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -82,13 +85,20 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.ScopedRateThrottle",),
-    "DEFAULT_THROTTLE_RATES": {"otp_request": "5/hour"},
+    # Tight per-phone limit by default (anti-OTP-brute-force). Override via
+    # OTP_REQUEST_RATE env for local/dev testing only — never loosen in prod.
+    "DEFAULT_THROTTLE_RATES": {
+        "otp_request": os.environ.get("OTP_REQUEST_RATE", "5/hour"),
+    },
 }
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
+
+# Dev CORS: allow the Expo web bundle (and any origin) to call the API in DEBUG.
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # Onboarding domain config
 OTP_TTL_SECONDS = 300
