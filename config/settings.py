@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "integrations",
     "pricing",
     "drivers",
+    "markers",
 ]
 
 MIDDLEWARE = [

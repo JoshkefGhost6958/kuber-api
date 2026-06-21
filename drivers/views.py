@@ -91,6 +91,32 @@ def submit(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def online_drivers(_request):
+    """Approximate positions of approved + online drivers for the rider map.
+
+    Privacy: requires auth, omits driver identity, and rounds coordinates to
+    ~110m so the map shows car density, not precise/correlatable tracking.
+    """
+    qs = DriverProfile.objects.filter(
+        status=DriverProfile.Status.APPROVED,
+        is_online=True,
+        current_lat__isnull=False,
+    )
+    out = []
+    for d in qs:
+        v = d.vehicles.filter(is_active=True).first()
+        out.append(
+            {
+                "latitude": round(d.current_lat, 3),
+                "longitude": round(d.current_lng, 3),
+                "vehicle_type": v.vehicle_type.code if v else None,
+            }
+        )
+    return Response(out)
+
+
+@api_view(["GET"])
 @permission_classes([IsAuthenticated, IsDriver])
 def driver_me(request):
     driver = request.user.driver_profile
