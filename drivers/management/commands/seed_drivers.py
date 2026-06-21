@@ -5,14 +5,15 @@ from accounts.models import User
 from drivers.models import DriverProfile, Vehicle
 from pricing.models import VehicleType
 
-# Dummy drivers positioned around Nairobi, ready to appear as online cars.
+# Dummy drivers positioned around Kirinyaga County (Kerugoya/Kutus/Mwea/Kagio),
+# ready to appear as online cars near the rider.
 SEED = [
-    ("+254700100001", "Otieno Boda", "BODA_ELECTRIC", "Roam", "Air", "Green", "KMEA001A", -1.2649, 36.8030),
-    ("+254700100002", "Wanjiru Cab", "CAB", "Toyota", "Fielder", "Silver", "KMEB002B", -1.2906, 36.7820),
-    ("+254700100003", "Kamau Tuktuk", "TUKTUK", "Bajaj", "RE", "Black", "KMEC003C", -1.2864, 36.8172),
-    ("+254700100004", "Achieng Cab", "CAB", "Toyota", "Axio", "White", "KMED004D", -1.2700, 36.8100),
-    ("+254700100005", "Mwangi Boda", "BODA", "Boxer", "150", "Red", "KMEE005E", -1.2950, 36.7900),
-    ("+254700100006", "Njeri Tuktuk", "TUKTUK", "Piaggio", "Ape", "Blue", "KMEF006F", -1.2820, 36.8230),
+    ("+254700100001", "Otieno Boda", "BODA_ELECTRIC", "Roam", "Air", "Green", "KMEA001A", -0.4986, 37.2803),  # Kerugoya
+    ("+254700100002", "Wanjiru Cab", "CAB", "Toyota", "Fielder", "Silver", "KMEB002B", -0.5530, 37.2960),  # Kutus
+    ("+254700100003", "Kamau Tuktuk", "TUKTUK", "Bajaj", "RE", "Black", "KMEC003C", -0.6100, 37.3330),  # Kagio
+    ("+254700100004", "Achieng Cab", "CAB", "Toyota", "Axio", "White", "KMED004D", -0.6870, 37.3740),  # Mwea/Ngurubani
+    ("+254700100005", "Mwangi Boda", "BODA", "Boxer", "150", "Red", "KMEE005E", -0.5300, 37.2200),  # Baricho
+    ("+254700100006", "Njeri Tuktuk", "TUKTUK", "Piaggio", "Ape", "Blue", "KMEF006F", -0.5100, 37.2900),  # near Kerugoya
 ]
 
 
