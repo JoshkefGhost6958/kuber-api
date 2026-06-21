@@ -18,7 +18,7 @@ def driver_with_motorbike():
     c.post(
         "/v1/drivers/me/vehicles",
         {
-            "vehicle_type": "MOTORBIKE",
+            "vehicle_type": "BODA_ELECTRIC",
             "make": "Boxer",
             "model": "150",
             "color": "Red",

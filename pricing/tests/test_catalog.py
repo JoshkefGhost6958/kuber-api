@@ -7,7 +7,7 @@ from pricing.models import VehicleType
 @pytest.mark.django_db
 def test_seed_created_four_types():
     assert VehicleType.objects.filter(is_active=True).count() == 4
-    assert VehicleType.objects.filter(code="MOTORBIKE").exists()
+    assert VehicleType.objects.filter(code="BODA_ELECTRIC").exists()
 
 
 @pytest.mark.django_db
@@ -15,24 +15,24 @@ def test_vehicle_types_endpoint_public():
     resp = APIClient().get("/v1/vehicle-types")
     assert resp.status_code == 200
     codes = {t["code"] for t in resp.json()}
-    assert {"MOTORBIKE", "MINI", "STANDARD", "XL"} <= codes
+    assert {"BODA_ELECTRIC", "BODA", "TUKTUK", "CAB"} <= codes
 
 
 @pytest.mark.django_db
-def test_motorbike_requirements_differ_from_car():
-    moto = {
+def test_boda_requirements_differ_from_cab():
+    boda = {
         r["doc_type"]
         for r in APIClient()
-        .get("/v1/drivers/document-requirements?vehicle_type=MOTORBIKE")
+        .get("/v1/drivers/document-requirements?vehicle_type=BODA_ELECTRIC")
         .json()
         if r["is_mandatory"]
     }
-    car = {
+    cab = {
         r["doc_type"]
         for r in APIClient()
-        .get("/v1/drivers/document-requirements?vehicle_type=STANDARD")
+        .get("/v1/drivers/document-requirements?vehicle_type=CAB")
         .json()
         if r["is_mandatory"]
     }
-    assert "PSV_BADGE" in car
-    assert "PSV_BADGE" not in moto
+    assert "PSV_BADGE" in cab
+    assert "PSV_BADGE" not in boda

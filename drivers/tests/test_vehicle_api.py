@@ -18,7 +18,7 @@ def test_add_motorbike():
     resp = c.post(
         "/v1/drivers/me/vehicles",
         {
-            "vehicle_type": "MOTORBIKE",
+            "vehicle_type": "BODA_ELECTRIC",
             "make": "Boxer",
             "model": "150",
             "color": "Red",
@@ -28,7 +28,7 @@ def test_add_motorbike():
         format="json",
     )
     assert resp.status_code == 201
-    assert resp.json()["vehicle_type"] == "MOTORBIKE"
+    assert resp.json()["vehicle_type"] == "BODA_ELECTRIC"
     assert resp.json()["is_active"] is True  # first vehicle auto-active
 
 
@@ -38,7 +38,7 @@ def test_activating_second_deactivates_first():
     v1 = c.post(
         "/v1/drivers/me/vehicles",
         {
-            "vehicle_type": "MINI",
+            "vehicle_type": "BODA",
             "make": "Vitz",
             "model": "F",
             "color": "White",
@@ -50,7 +50,7 @@ def test_activating_second_deactivates_first():
     v2 = c.post(
         "/v1/drivers/me/vehicles",
         {
-            "vehicle_type": "STANDARD",
+            "vehicle_type": "CAB",
             "make": "Fielder",
             "model": "G",
             "color": "Silver",

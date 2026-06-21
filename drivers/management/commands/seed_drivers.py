@@ -7,12 +7,12 @@ from pricing.models import VehicleType
 
 # Dummy drivers positioned around Nairobi, ready to appear as online cars.
 SEED = [
-    ("+254700100001", "Otieno Boda", "MOTORBIKE", "Boxer", "150", "Red", "KMEA001A", -1.2649, 36.8030),
-    ("+254700100002", "Wanjiru Cab", "STANDARD", "Toyota", "Fielder", "Silver", "KMEB002B", -1.2906, 36.7820),
-    ("+254700100003", "Kamau Express", "MINI", "Toyota", "Vitz", "White", "KMEC003C", -1.2864, 36.8172),
-    ("+254700100004", "Achieng XL", "XL", "Toyota", "Noah", "Grey", "KMED004D", -1.2700, 36.8100),
-    ("+254700100005", "Mwangi Boda", "MOTORBIKE", "TVS", "HLX", "Blue", "KMEE005E", -1.2950, 36.7900),
-    ("+254700100006", "Njeri Ride", "STANDARD", "Mazda", "Demio", "Black", "KMEF006F", -1.2820, 36.8230),
+    ("+254700100001", "Otieno Boda", "BODA_ELECTRIC", "Roam", "Air", "Green", "KMEA001A", -1.2649, 36.8030),
+    ("+254700100002", "Wanjiru Cab", "CAB", "Toyota", "Fielder", "Silver", "KMEB002B", -1.2906, 36.7820),
+    ("+254700100003", "Kamau Tuktuk", "TUKTUK", "Bajaj", "RE", "Black", "KMEC003C", -1.2864, 36.8172),
+    ("+254700100004", "Achieng Cab", "CAB", "Toyota", "Axio", "White", "KMED004D", -1.2700, 36.8100),
+    ("+254700100005", "Mwangi Boda", "BODA", "Boxer", "150", "Red", "KMEE005E", -1.2950, 36.7900),
+    ("+254700100006", "Njeri Tuktuk", "TUKTUK", "Piaggio", "Ape", "Blue", "KMEF006F", -1.2820, 36.8230),
 ]
 
 

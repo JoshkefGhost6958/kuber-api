@@ -3,10 +3,10 @@ from django.db import models
 
 class VehicleType(models.Model):
     class Code(models.TextChoices):
-        MOTORBIKE = "MOTORBIKE", "Boda"
-        MINI = "MINI", "Mini"
-        STANDARD = "STANDARD", "Standard"
-        XL = "XL", "XL"
+        BODA_ELECTRIC = "BODA_ELECTRIC", "Boda (Electric)"
+        BODA = "BODA", "Boda"
+        TUKTUK = "TUKTUK", "Tuktuk"
+        CAB = "CAB", "Cab"
 
     code = models.CharField(max_length=16, choices=Code.choices, unique=True)
     display_name = models.CharField(max_length=32)

@@ -12,7 +12,7 @@ def test_full_approval_flow():
         phone_number="+254700000000", name="D", role=User.Role.DRIVER
     )
     d = DriverProfile.objects.create(user=u)
-    moto = VehicleType.objects.get(code="MOTORBIKE")
+    moto = VehicleType.objects.get(code="BODA_ELECTRIC")
     Vehicle.objects.create(
         driver=d,
         vehicle_type=moto,
