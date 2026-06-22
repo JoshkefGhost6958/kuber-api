@@ -6,7 +6,8 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "phone_number", "name", "role"]
+        fields = ["id", "phone_number", "name", "role", "is_staff"]
+        read_only_fields = ["is_staff"]
 
 
 class OtpRequestSerializer(serializers.Serializer):
