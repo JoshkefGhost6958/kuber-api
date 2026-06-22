@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "pricing",
     "drivers",
     "markers",
+    "places",
 ]
 
 MIDDLEWARE = [
@@ -129,5 +130,8 @@ OTP_MAX_ATTEMPTS = 5
 # (no SMS needed). Both must be set together; see accounts.checks. For demos.
 DEMO_OTP = os.environ.get("DEMO_OTP", "")
 DEMO_PHONES = [p.strip() for p in os.environ.get("DEMO_PHONES", "").split(",") if p.strip()]
+
+# Google Places (server-side proxy for autocomplete + nearest place).
+GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
 WELCOME_RIDES_DEFAULT = 3
 SMS_PROVIDER = "integrations.sms.FakeSmsProvider"

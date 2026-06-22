@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from .models import DocumentRequirement, VehicleType
+from .models import DocumentRequirement, FareRoute, VehicleType
+
+
+class FareRouteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FareRoute
+        fields = ["id", "origin", "destination", "price", "notes"]
 
 
 class VehicleTypeSerializer(serializers.ModelSerializer):

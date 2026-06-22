@@ -14,6 +14,8 @@ SEED = [
     ("+254700100004", "Achieng Cab", "CAB", "Toyota", "Axio", "White", "KMED004D", -0.6870, 37.3740),  # Mwea/Ngurubani
     ("+254700100005", "Mwangi Boda", "BODA", "Boxer", "150", "Red", "KMEE005E", -0.5300, 37.2200),  # Baricho
     ("+254700100006", "Njeri Tuktuk", "TUKTUK", "Piaggio", "Ape", "Blue", "KMEF006F", -0.5100, 37.2900),  # near Kerugoya
+    ("+254700100007", "Mbuni Boda", "BODA_ELECTRIC", "Roam", "Air", "Green", "KMBUNI07", -0.5460, 37.3010),  # Mbuni hostels, Kutus
+    ("+254700100008", "Mbuni Tuktuk", "TUKTUK", "Bajaj", "RE", "Yellow", "KMBUNI08", -0.5465, 37.3005),  # Mbuni hostels, Kutus
 ]
 
 

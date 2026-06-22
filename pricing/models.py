@@ -40,3 +40,33 @@ class DocumentRequirement(models.Model):
 
     def __str__(self):
         return f"{self.vehicle_type.code}:{self.doc_type}"
+
+
+class FareRoute(models.Model):
+    """Driver-collected flat fare between two named places (KSh).
+
+    Origin/destination are matched case-insensitively (contains), so e.g.
+    origin "Mbuni" covers "Mbuni Hostel". Populated by ops/field staff as
+    drivers report stage-to-stage prices.
+    """
+
+    origin = models.CharField(max_length=120)
+    destination = models.CharField(max_length=120)
+    price = models.PositiveIntegerField(help_text="Flat fare in KSh")
+    vehicle_type = models.ForeignKey(
+        VehicleType,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="fares",
+        help_text="Optional; blank = applies to any vehicle (e.g. boda).",
+    )
+    notes = models.CharField(max_length=200, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["origin", "destination"])]
+
+    def __str__(self):
+        return f"{self.origin} → {self.destination}: KSh {self.price}"
