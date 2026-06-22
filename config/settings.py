@@ -125,8 +125,9 @@ if _cors:
 # Onboarding domain config
 OTP_TTL_SECONDS = 300
 OTP_MAX_ATTEMPTS = 5
-# Demo/master OTP: when set, this code logs in any phone (no SMS needed).
-# For demos only — anyone with it can sign in as any number. Unset to disable.
+# Demo OTP: a fixed code that signs in ONLY the allow-listed demo phone numbers
+# (no SMS needed). Both must be set together; see accounts.checks. For demos.
 DEMO_OTP = os.environ.get("DEMO_OTP", "")
+DEMO_PHONES = [p.strip() for p in os.environ.get("DEMO_PHONES", "").split(",") if p.strip()]
 WELCOME_RIDES_DEFAULT = 3
 SMS_PROVIDER = "integrations.sms.FakeSmsProvider"
