@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 from accounts.models import User
 
@@ -114,6 +115,34 @@ def online_drivers(_request):
             }
         )
     return Response(out)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsDriver])
+def availability(request):
+    """Go online/offline (only APPROVED drivers may go online)."""
+    d = request.user.driver_profile
+    online = bool(request.data.get("is_online"))
+    try:
+        d.go_online() if online else d.go_offline()
+    except ValidationError as e:
+        return Response({"detail": e.message}, status=400)
+    return Response(DriverProfileSerializer(d).data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsDriver])
+def update_location(request):
+    """Driver pushes its live location (so the rider sees it approaching)."""
+    d = request.user.driver_profile
+    lat, lng = request.data.get("lat"), request.data.get("lng")
+    if lat is None or lng is None:
+        return Response({"detail": "lat and lng required"}, status=400)
+    d.current_lat = lat
+    d.current_lng = lng
+    d.last_location_at = timezone.now()
+    d.save(update_fields=["current_lat", "current_lng", "last_location_at"])
+    return Response({"ok": True})
 
 
 @api_view(["GET"])

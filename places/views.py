@@ -16,6 +16,28 @@ def _get(url: str) -> dict:
         return json.loads(r.read().decode())
 
 
+def _decode_polyline(s: str):
+    """Decode a Google encoded polyline into [lat, lng] points."""
+    points, index, lat, lng = [], 0, 0, 0
+    while index < len(s):
+        for is_lat in (True, False):
+            shift = result = 0
+            while True:
+                b = ord(s[index]) - 63
+                index += 1
+                result |= (b & 0x1F) << shift
+                shift += 5
+                if b < 0x20:
+                    break
+            delta = ~(result >> 1) if (result & 1) else (result >> 1)
+            if is_lat:
+                lat += delta
+            else:
+                lng += delta
+        points.append([lat / 1e5, lng / 1e5])
+    return points
+
+
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def autocomplete(request):
@@ -66,3 +88,43 @@ def nearest(request):
     except Exception:
         name = None
     return Response({"name": name})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def directions(request):
+    """Driving route + ETA between two points (coords or text)."""
+    key = settings.GOOGLE_PLACES_API_KEY
+    empty = {"points": [], "duration_text": None, "duration_sec": None, "distance_text": None}
+    if not key:
+        return Response(empty)
+    p = request.query_params
+    origin = (
+        f"{p['from_lat']},{p['from_lng']}"
+        if p.get("from_lat") and p.get("from_lng")
+        else (p.get("from") or "")
+    )
+    dest = (
+        f"{p['to_lat']},{p['to_lng']}"
+        if p.get("to_lat") and p.get("to_lng")
+        else (p.get("to") or "")
+    )
+    if not origin or not dest:
+        return Response(empty)
+    params = {"origin": origin, "destination": dest, "mode": "driving", "key": key}
+    try:
+        data = _get(f"{GOOGLE}/directions/json?" + urllib.parse.urlencode(params))
+        routes = data.get("routes", [])
+        if not routes:
+            return Response(empty)
+        leg = routes[0]["legs"][0]
+        return Response(
+            {
+                "points": _decode_polyline(routes[0]["overview_polyline"]["points"]),
+                "duration_text": leg["duration"]["text"],
+                "duration_sec": leg["duration"]["value"],
+                "distance_text": leg["distance"]["text"],
+            }
+        )
+    except Exception:
+        return Response(empty)

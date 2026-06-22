@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "drivers",
     "markers",
     "places",
+    "trips",
 ]
 
 MIDDLEWARE = [
@@ -133,5 +134,9 @@ DEMO_PHONES = [p.strip() for p in os.environ.get("DEMO_PHONES", "").split(",") i
 
 # Google Places (server-side proxy for autocomplete + nearest place).
 GOOGLE_PLACES_API_KEY = os.environ.get("GOOGLE_PLACES_API_KEY", "")
+
+# Platform commission (KSh) added on top of the base fare.
+PLATFORM_CLIENT_FEE = int(os.environ.get("PLATFORM_CLIENT_FEE", "10"))
+PLATFORM_DRIVER_FEE = int(os.environ.get("PLATFORM_DRIVER_FEE", "5"))
 WELCOME_RIDES_DEFAULT = 3
 SMS_PROVIDER = "integrations.sms.FakeSmsProvider"

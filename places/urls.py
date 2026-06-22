@@ -5,4 +5,5 @@ from . import views
 urlpatterns = [
     path("places/autocomplete", views.autocomplete),
     path("places/nearest", views.nearest),
+    path("directions", views.directions),
 ]

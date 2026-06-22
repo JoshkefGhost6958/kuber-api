@@ -21,4 +21,5 @@ urlpatterns = [
     path("v1/", include("drivers.urls")),
     path("v1/", include("markers.urls")),
     path("v1/", include("places.urls")),
+    path("v1/", include("trips.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

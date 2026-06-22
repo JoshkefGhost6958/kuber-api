@@ -12,7 +12,7 @@ ORIGINS = [
     "Mory Hostel",
     "Mjini",
 ]
-DESTINATION = "Kutus Town"
+DESTINATION = "Kutus"
 PRICE = 50
 
 

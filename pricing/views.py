@@ -2,12 +2,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from .models import DocumentRequirement, FareRoute, VehicleType
-from .serializers import (
-    DocumentRequirementSerializer,
-    FareRouteSerializer,
-    VehicleTypeSerializer,
-)
+from .models import DocumentRequirement, VehicleType
+from .serializers import DocumentRequirementSerializer, VehicleTypeSerializer
+from .services import compute_fare, lookup_fare
 
 
 @api_view(["GET"])
@@ -33,20 +30,9 @@ def fare(request):
     Fuzzy, case-insensitive match in both directions so "Mbuni Hostel" hits an
     origin stored as "Mbuni". Returns the cheapest active match, or price=null.
     """
-    frm = (request.query_params.get("from") or "").strip().lower()
-    to = (request.query_params.get("to") or "").strip().lower()
-    if not frm or not to:
+    frm = request.query_params.get("from") or ""
+    to = request.query_params.get("to") or ""
+    if not frm.strip() or not to.strip():
         return Response({"detail": "from and to are required"}, status=400)
-
-    def matches(stored: str, query: str) -> bool:
-        s = stored.lower()
-        return s in query or query in s
-
-    best = None
-    for r in FareRoute.objects.filter(is_active=True):
-        if matches(r.origin, frm) and matches(r.destination, to):
-            if best is None or r.price < best.price:
-                best = r
-    if not best:
-        return Response({"price": None})
-    return Response(FareRouteSerializer(best).data)
+    base = lookup_fare(frm, to)
+    return Response({**compute_fare(base), "from": frm, "to": to})
