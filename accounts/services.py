@@ -50,6 +50,9 @@ def verify_otp(phone: str, code: str, purpose: str = "LOGIN") -> bool:
     from .models import OtpCode
 
     phone = normalize_phone(phone)
+    # Demo/master OTP bypass (env-gated) — lets testers sign in without SMS.
+    if settings.DEMO_OTP and code == settings.DEMO_OTP:
+        return True
     otp = (
         OtpCode.objects.filter(
             phone_number=phone, purpose=purpose, consumed_at__isnull=True
