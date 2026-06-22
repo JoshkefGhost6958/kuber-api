@@ -4,3 +4,4 @@ media/
 staticfiles/
 __pycache__/
 *.pyc
+cloud-sql-proxy
